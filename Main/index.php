@@ -1,0 +1,141 @@
+<?php
+error_reporting(0);
+$path = trim($_SERVER['REQUEST_URI'], "/");
+
+if ($path == "") {
+    header("Location: https://admin.geolife.click");
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shorturl</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -o-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #app {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99;
+            background: white;
+        }
+
+        #app #loading {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            z-index: inherit;
+            border-radius: 50%;
+            border: 8px solid #aaa;
+            border-top: 8px solid transparent;
+            animation: loading 1s infinite linear;
+        }
+
+        @keyframes loading {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #app #error {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: #333;
+            display: none;
+        }
+
+        #app #error button {
+            width: fit-content;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-top: 20px;
+            border: none;
+            outline: none;
+            border-radius: 4px;
+            background: #07f;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="loading"></div>
+        <div id="error">
+            <span>Sorry, page not found</span>
+            <button onclick="location.reload()">Retry</button>
+        </div>
+    </div>
+    <script>
+        var loading = document.getElementById("loading")
+        var error = document.getElementById("error")
+        function showError() {
+            loading.style.display = "none"
+            error.style.display = "flex"
+        }
+    </script>
+</body>
+
+</html>
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "shorturl";
+
+// Create connection
+try {
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    $query = "SELECT link FROM links WHERE code = '$path' && link_active = 1";
+    $data = $conn->query($query);
+    $total = $data->num_rows;
+    if ($total != 1) {
+        throw new Exception("Error", 1);
+    }
+    $link = $data->fetch_assoc()['link'];
+    $query2 = "UPDATE links SET clicks = clicks + 1 WHERE code = '$path'";
+    $data2 = $conn->query($query2);
+    header('Location: ' . $link);
+} catch (Throwable $th) {
+    echo "<script>showError();</script>";
+    exit();
+}
+?>
