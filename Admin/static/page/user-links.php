@@ -152,6 +152,7 @@
         $(".link_info .long_url a").html(long_url)
         $(".link_info .long_url a").attr("href", long_url)
         $(".link_info .qr_section .activation").on("click", () => {
+            $(".link_info .qr_section .activation").addClass("loading-btn")
             location.href = "/php/createQRCode.php?code=" + code
         })
         $(".link_info .short_url .copy").on("click", () => {

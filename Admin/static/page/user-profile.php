@@ -1,35 +1,44 @@
+<?php
+session_start();
+?>
 <div class="profile_container">
-    <form action="/updateAuth" method="post">
-        <div class="profile_view">
-            <div class="title">Profile View</div>
-            <div class="input">
-                <label for="profile_name">Name</label>
-                <input type="text" name="name" id="profile_name" readonly>
-            </div>
-            <div class="input">
-                <label for="profile_email">Email</label>
-                <input type="email" name="email" id="profile_email" readonly>
-            </div>
-            <div class="input">
-                <label for="profile_username">Username</label>
-                <input type="text" name="username" id="profile_username" readonly>
-            </div>
-            <div class="input">
-                <label for="profile_password">Password</label>
-                <input type="password" name="password" id="profile_password" readonly>
-            </div>
-            <!-- <div class="input">
-                <label for="profile_password">Confirm Password</label>
-                <input type="password" name="confirm_password" id="profile_confirm_password">
-            </div> -->
-            <div class="submit">
-                <button type="button" name="edit" id="profile_edit" onclick="btnLoad(this, true)">Edit</button>
-                <button type="submit" name="submit" id="profile_submit">Save</button>
-            </div>
+    <div class="title">Edit Profile</div>
+    <div class="profile_view">
+        <div class="input display_name">
+            <form action="/php/authUpdate.php?change=name" method="post">
+                <label for="form_name">Display Name</label>
+                <input type="text" name="name" id="form_name" value="<?php echo $_SESSION['name']; ?>" required>
+                <button type="submit">Save</button>
+            </form>
         </div>
-    </form>
+        <div class="input email">
+            <form action="/php/authUpdate.php?change=email" method="post">
+                <label for="form_email">Email Address</label>
+                <input type="email" name="email" id="form_email" value="<?php echo $_SESSION['email']; ?>" required>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+        <div class="input username">
+            <form action="/php/authUpdate.php?change=username" method="post">
+                <label for="form_email">Change Username</label>
+                <input type="text" name="username" id="form_username" value="<?php echo $_SESSION['username']; ?>" required>
+                <button type="submit">Set</button>
+            </form>
+        </div>
+        <div class="input password">
+            <form action="/php/authUpdate.php?change=password" method="post">
+                <label for="form_current_password">Change Password</label>
+                <input type="password" name="current_password" id="form_current_password" placeholder="Current Password" required>
+                <input type="password" name="new_password" id="form_new_password" placeholder="New Password" required>
+                <button type="submit">Change</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
-    
+    $('.profile_container .profile_view form').on("submit", (e)=>{
+        // e.preventDefault()
+        $(e.target).children("button[type=submit]").addClass('loading-btn')
+    })
 </script>

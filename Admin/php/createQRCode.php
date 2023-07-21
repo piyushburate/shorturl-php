@@ -37,7 +37,7 @@ if ($data) {
     if ($total == 1) {
         $ops = createQR($code);
         if(!$ops){
-            echo "<script> alert('An internal error occurred!'); history.back();</script>";
+            echo "<script> alert('An internal error occurred!'); location.href = '/user/links?code=$code'</script>";
             exit();
         }
         $query2 = "UPDATE links SET qr_code = 1 WHERE code = '$code' && uid = $uid";
@@ -45,7 +45,6 @@ if ($data) {
         if ($data2) {
             echo "<script> alert('QR code generated successfully!');</script>";
             header("Location: /user/links?code=$code");
-            // echo "<img src='/static/img/qrcodes/$code.png'>";
         } else {
             echo "<script> alert('An internal error occurred!'); history.back();</script>";
         }

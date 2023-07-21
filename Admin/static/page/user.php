@@ -10,11 +10,20 @@ if (!isset($_SESSION['username'])) {
         <div class="sidebar_toggle">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h16.5" />
             </svg>
         </div>
         <div class="brand">
             <img src="/static/img/geolife-logo.png" alt="">
+        </div>
+        <div class="search_box">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 search_icon"
+                onclick="$('.navbar .search_box').toggleClass('active')">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <input type="search" name="search" id="search_box" placeholder="Search..." autocomplete="off">
         </div>
         <div class="profile">
             <div class="profile_label" onclick="$('.navbar .profile').toggleClass('active')">
@@ -47,7 +56,7 @@ if (!isset($_SESSION['username'])) {
                     <span class="username">
                         <?php echo $_SESSION['username']; ?>
                     </span>
-                    <span class="btn_edit">Edit</span>
+                    <span class="btn_edit" onclick="goTo('profile', 'user');$('.navbar .profile').removeClass('active')">Edit</span>
                 </div>
                 <div class="section_three">
                     <span class="btn_signout" onclick="location.href = '/php/authSignout.php'">Sign out</span>
