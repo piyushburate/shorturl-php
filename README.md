@@ -1,0 +1,3 @@
+# ShortUrl PHP
+This is a URL shortner website using PHP.
+It has many features like custom short url and QR code generator and many more...
