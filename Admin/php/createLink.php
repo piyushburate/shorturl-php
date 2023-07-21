@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['username'])) {
-    echo "<script>goTo('/login');</script>";
+    header('Location: /login');
     exit();
 }
 

@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 $path = trim($_SERVER['REQUEST_URI'], "/");
+$path = explode('?', $path)[0];
 
 if ($path == "") {
     header("Location: https://admin.geolife.click");

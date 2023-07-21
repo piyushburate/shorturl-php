@@ -7,13 +7,13 @@
             session_start();
             include("../../php/connection.php");
             $uid = $_SESSION['uid'];
-            $query = "SELECT id, title, code, link, DATE_FORMAT(datetime, '%b %e, %Y') AS 'date', DATE_FORMAT(datetime, '%l:%i %p') AS 'time', clicks, link_active FROM links WHERE uid = $uid ORDER BY datetime DESC";
+            $query = "SELECT id, title, code, link, DATE_FORMAT(datetime, '%b %e, %Y') AS 'date', DATE_FORMAT(datetime, '%l:%i %p') AS 'time', clicks, qr_code, link_active FROM links WHERE uid = $uid ORDER BY datetime DESC";
             $result = $conn->query($query);
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo '
-                    <div class="link" data-id="' . $row['id'] . '" data-code="' . $row['code'] . '" data-url="' . $row['link'] . '" data-title="' . $row['title'] . '" data-datetime="' . $row['date'] . ' at ' . $row['time'] . '" data-clicks="' . $row['clicks'] . '" data-link-active="' . $row['link_active'] . '" onclick="linkClick(this)">
+                    <div class="link" data-id="' . $row['id'] . '" data-code="' . $row['code'] . '" data-url="' . $row['link'] . '" data-title="' . $row['title'] . '" data-datetime="' . $row['date'] . ' at ' . $row['time'] . '" data-clicks="' . $row['clicks'] . '" data-link-active="' . $row['link_active'] . '" data-qr-code="' . $row['qr_code'] . '" onclick="linkClick(this)">
                         <span class="link_active active' . $row['link_active'] . '"></span>
                         <span class="date_created">' . $row['date'] . '</span>
                         <span class="long_url">' . $row['link'] . '</span>
@@ -67,7 +67,7 @@
         </div>
         <div class="link_data">
             <div class="short_url">
-                <span>short.url/</span>
+                <span></span>
                 <button class="copy">Copy</button>
             </div>
             <div class="clicks">
@@ -89,7 +89,7 @@
             <div class="qr_section">
                 <div class="title">QR Code</div>
                 <div class="qr_code">
-                    <img src="/static/img/qr_code.jpg" alt="QR Code">
+                    <img src="" alt="QR Code">
                 </div>
                 <div class="qr_actions">
                     <button class="share">
@@ -112,9 +112,11 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                                d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
                         </svg>
-                        <span>Deactivate</span>
+                        <span>Create QR Code</span>
                     </button>
                 </div>
             </div>
@@ -123,7 +125,6 @@
 </div>
 
 <script>
-
     var linkClick = async (link) => {
         await $(".link").each((i, l) => {
             $(l).removeClass("active")
@@ -140,27 +141,40 @@
         var code = $(link).attr("data-code")
         var long_url = $(link).attr("data-url")
         var clicks = $(link).attr("data-clicks")
+        var qr_code = $(link).attr("data-qr-code")
         var title = $(link).attr("data-title")
         var datetime = $(link).attr("data-datetime")
         $(".link_details .title span").html(title)
         $(".link_details .datetime_created span").html(datetime)
         $(".link_info .link_details .clicks span").html(clicks + " Engagements")
         $(".link_info .link_data .clicks span").html(clicks + " clicks")
-        $(".link_info .short_url span").html("geolife.click/" + code)
+        $(".link_info .short_url span").text("geolife.click/" + code)
         $(".link_info .long_url a").html(long_url)
         $(".link_info .long_url a").attr("href", long_url)
+        $(".link_info .qr_section .activation").on("click", () => {
+            location.href = "/php/createQRCode.php?code=" + code
+        })
         $(".link_info .short_url .copy").on("click", () => {
-            var copy = $('<input>').val("geolife.click/" + code)
-            $("body").append(copy)
-            copy.select()
-            document.execCommand("copy")
-            document.activeElement.blur()
-            copy.remove()
+            copyText($(".link_info .short_url span").text())
             $(".link_info .short_url .copy").text("Copied!")
             setTimeout(() => {
                 $(".link_info .short_url .copy").text("Copy")
-            }, 3000);
+            }, 5000);
         })
+        $(".link_info .qr_section .qr_actions button.download").on("click", () => {
+            var a = document.createElement("a")
+            a.href = $(".link_info .qr_section .qr_code img").attr("src")
+            a.download = "QR Code.png"
+            a.click()
+            a = null
+        })
+        if (qr_code == 1) {
+            $(".link_info .qr_section").addClass("active")
+            $(".link_info .qr_section .qr_code img").attr("src", "/static/img/qrcodes/" + code + ".png")
+        } else {
+            $(".link_info .qr_section").removeClass("active")
+            $(".link_info .qr_section .qr_code img").attr("src", "")
+        }
         var url = window.location.origin + window.location.pathname + "?code=" + code
         window.history.replaceState(null, null, url)
     }
@@ -180,8 +194,9 @@
         }
     }
     setLinkClick()
+</script>
 
-
+<script>
     $("#edit_link_btn").on("click", async () => {
         openLinkDialog()
         $("#create_new_form").attr("action", "/php/updateLink.php")

@@ -1,20 +1,58 @@
 <?php
 session_start();
-if(!isset($_SESSION['username'])){
+if (!isset($_SESSION['username'])) {
     echo "<script>goTo('/login');</script>";
 }
 ?>
 
 <div class="dashboard">
     <div class="navbar">
-        <div class="brand">
-            <img src="/static/img/geolife-logo.png" alt="">
-        </div>
         <div class="sidebar_toggle">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
+        </div>
+        <div class="brand">
+            <img src="/static/img/geolife-logo.png" alt="">
+        </div>
+        <div class="profile">
+            <div class="profile_label" onclick="$('.navbar .profile').toggleClass('active')">
+                <span class="icon">
+                    <?php echo substr($_SESSION['name'], 0, 1); ?>
+                </span>
+                <span class="name">
+                    <?php echo $_SESSION['name']; ?>
+                </span>
+            </div>
+            <div class="profile_popup">
+                <div class="section_one">
+                    <span class="icon">
+                        <?php
+                        $name_split = explode(' ', $_SESSION['name'], 2);
+                        foreach ($name_split as $value) {
+                            echo substr($value, 0, 1);
+                        }
+                        ?>
+                    </span>
+                    <span class="name single-line-text">
+                        <?php echo $_SESSION['name']; ?>
+                    </span>
+                    <span class="email single-line-text">
+                        <?php echo $_SESSION['email']; ?>
+                    </span>
+                </div>
+                <div class="section_two">
+                    <span class="label">Username</span>
+                    <span class="username">
+                        <?php echo $_SESSION['username']; ?>
+                    </span>
+                    <span class="btn_edit">Edit</span>
+                </div>
+                <div class="section_three">
+                    <span class="btn_signout" onclick="location.href = '/php/authSignout.php'">Sign out</span>
+                </div>
+            </div>
         </div>
     </div>
     <div class="sidebar">
@@ -137,8 +175,8 @@ if(!isset($_SESSION['username'])){
         $(".dialog_box .dialog_body #form_linkactive").attr("checked", true)
         $(".dialog_box .dialog_footer #form_submit").text("Create")
     })
-    
-    
+
+
     $("#create_new_form").on("submit", (e) => {
         // e.preventDefault()
         $(".dialog_box .dialog_body #form_shorturl").attr("readonly", false)

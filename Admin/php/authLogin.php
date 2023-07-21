@@ -11,6 +11,7 @@ if ($data) {
     if ($total == 1) {
         $row = $data->fetch_assoc();
         $_SESSION['uid'] = $row['uid'];
+        $_SESSION['name'] = $row['name'];
         $_SESSION['username'] = $row['username'];
         $_SESSION['email'] = $row['email'];
         echo "<script> alert('Login Successfull!');</script>";

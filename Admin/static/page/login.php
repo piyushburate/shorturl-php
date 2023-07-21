@@ -30,7 +30,6 @@ if(isset($_SESSION['username'])){
 <script>
     console.log();
     $(".form").on("submit", async (e) => {
-        // e.preventDefault()
         btnLoad($("#form_submit"), true)
     })
 
