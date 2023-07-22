@@ -7,13 +7,13 @@
             session_start();
             include("../../php/connection.php");
             $uid = $_SESSION['uid'];
-            $query = "SELECT id, title, code, link, DATE_FORMAT(datetime, '%b %e, %Y') AS 'date', DATE_FORMAT(datetime, '%l:%i %p') AS 'time', clicks, qr_code, link_active FROM links WHERE uid = $uid ORDER BY datetime DESC";
+            $query = "SELECT id, title, code, link, DATE_FORMAT(datetime, '%b %e, %Y') AS 'date', DATE_FORMAT(datetime, '%l:%i %p') AS 'time', clicks, qr_code, qr_scans, link_active FROM links WHERE uid = $uid ORDER BY datetime DESC";
             $result = $conn->query($query);
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo '
-                    <div class="link" data-id="' . $row['id'] . '" data-code="' . $row['code'] . '" data-url="' . $row['link'] . '" data-title="' . $row['title'] . '" data-datetime="' . $row['date'] . ' at ' . $row['time'] . '" data-clicks="' . $row['clicks'] . '" data-link-active="' . $row['link_active'] . '" data-qr-code="' . $row['qr_code'] . '" onclick="linkClick(this)">
+                    <div class="link" data-id="' . $row['id'] . '" data-code="' . $row['code'] . '" data-url="' . $row['link'] . '" data-title="' . $row['title'] . '" data-datetime="' . $row['date'] . ' at ' . $row['time'] . '" data-clicks="' . $row['clicks'] . '" data-link-active="' . $row['link_active'] . '" data-qr-code="' . $row['qr_code'] . '" data-qr-scans="' . $row['qr_scans'] . '" onclick="linkClick(this)">
                         <span class="link_active active' . $row['link_active'] . '"></span>
                         <span class="date_created">' . $row['date'] . '</span>
                         <span class="long_url">' . $row['link'] . '</span>
@@ -23,7 +23,7 @@
                                 stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 19.5v-.75a7.5 7.5 0 00-7.5-7.5H4.5m0-6.75h.75c7.87 0 14.25 6.38 14.25 14.25v.75M6 18.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
                             </svg>
-                            <span>' . $row['clicks'] . '</span>
+                            <span>' . ($row['clicks'] + $row['qr_scans']) . '</span>
                             </div>
                         </div>
                     ';
@@ -78,6 +78,16 @@
                 </svg>
                 <span> clicks</span>
             </div>
+            <div class="qr_scans">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+                </svg>
+                <span>12 scans</span>
+            </div>
             <div class="long_url">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6">
@@ -88,9 +98,7 @@
             </div>
             <div class="qr_section">
                 <div class="title">QR Code</div>
-                <div class="qr_code">
-                    <img src="" alt="QR Code">
-                </div>
+                <div class="qr_code"></div>
                 <div class="qr_actions">
                     <button class="share">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -125,6 +133,22 @@
 </div>
 
 <script>
+
+    $(".link_info .qr_section .qr_actions button.download").on("click", () => {
+        var a = document.createElement("a")
+        a.href = document.querySelector(".link_info .qr_section .qr_code canvas").toDataURL("image/jpg")
+        a.download = "QR Code.png"
+        a.click()
+        a = null
+    })
+    $(".link_info .short_url .copy").on("click", () => {
+        copyText($(".link_info .short_url span").text())
+        $(".link_info .short_url .copy").text("Copied!")
+        setTimeout(() => {
+            $(".link_info .short_url .copy").text("Copy")
+        }, 5000);
+    })
+
     var linkClick = async (link) => {
         await $(".link").each((i, l) => {
             $(l).removeClass("active")
@@ -142,12 +166,14 @@
         var long_url = $(link).attr("data-url")
         var clicks = $(link).attr("data-clicks")
         var qr_code = $(link).attr("data-qr-code")
+        var qr_scans = $(link).attr("data-qr-scans")
         var title = $(link).attr("data-title")
         var datetime = $(link).attr("data-datetime")
         $(".link_details .title span").html(title)
         $(".link_details .datetime_created span").html(datetime)
-        $(".link_info .link_details .clicks span").html(clicks + " Engagements")
+        $(".link_info .link_details .clicks span").html((parseInt(clicks) + parseInt(qr_scans)) + " Engagements")
         $(".link_info .link_data .clicks span").html(clicks + " clicks")
+        $(".link_info .link_data .qr_scans span").html(qr_scans + " scans")
         $(".link_info .short_url span").text("geolife.click/" + code)
         $(".link_info .long_url a").html(long_url)
         $(".link_info .long_url a").attr("href", long_url)
@@ -155,26 +181,23 @@
             $(".link_info .qr_section .activation").addClass("loading-btn")
             location.href = "/php/createQRCode.php?code=" + code
         })
-        $(".link_info .short_url .copy").on("click", () => {
-            copyText($(".link_info .short_url span").text())
-            $(".link_info .short_url .copy").text("Copied!")
-            setTimeout(() => {
-                $(".link_info .short_url .copy").text("Copy")
-            }, 5000);
-        })
-        $(".link_info .qr_section .qr_actions button.download").on("click", () => {
-            var a = document.createElement("a")
-            a.href = $(".link_info .qr_section .qr_code img").attr("src")
-            a.download = "QR Code.png"
-            a.click()
-            a = null
-        })
         if (qr_code == 1) {
             $(".link_info .qr_section").addClass("active")
-            $(".link_info .qr_section .qr_code img").attr("src", "/static/img/qrcodes/" + code + ".png")
+            $(".link_info .qr_section .qr_code").html("")
+            var qr_code_options = {
+                text: "https://geolife.click/" + code + "/qr",
+                title: "geolife.click/" + code,
+                titleFont: "normal normal bold 18px Arial",
+                titleHeight: 40,
+                titleTop: 15,
+                quietZone: 20,
+                logo: "/static/img/geolife-logo-circle-coloured.png",
+                logoBackgroundTransparent: true
+            }
+            new QRCode(document.querySelector(".link_info .qr_section .qr_code"), qr_code_options);
         } else {
             $(".link_info .qr_section").removeClass("active")
-            $(".link_info .qr_section .qr_code img").attr("src", "")
+            $(".link_info .qr_section .qr_code").html("")
         }
         var url = window.location.origin + window.location.pathname + "?code=" + code
         window.history.replaceState(null, null, url)

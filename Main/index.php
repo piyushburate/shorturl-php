@@ -2,11 +2,11 @@
 error_reporting(0);
 $path = trim($_SERVER['REQUEST_URI'], "/");
 $path = explode('?', $path)[0];
-
 if ($path == "") {
     header("Location: https://admin.geolife.click");
     exit();
 }
+$path = explode('/', $path);
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +15,7 @@ if ($path == "") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shorturl</title>
+    <title>Geolife</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -117,6 +117,18 @@ if ($path == "") {
 
 </html>
 <?php
+$code = $path[0];
+$qr_search = "";
+$update_col = "clicks";
+if (sizeof($path) == 2) {
+    $act = $path[1];
+    if ($act != "qr") {
+        echo "<script>showError();</script>";
+        exit();
+    }
+    $qr_search = "&& qr_code = 1";
+    $update_col = "qr_scans";
+}
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -125,14 +137,14 @@ $dbname = "shorturl";
 // Create connection
 try {
     $conn = new mysqli($servername, $username, $password, $dbname);
-    $query = "SELECT link FROM links WHERE code = '$path' && link_active = 1";
+    $query = "SELECT link FROM links WHERE code = '$code' && link_active = 1 $qr_search";
     $data = $conn->query($query);
     $total = $data->num_rows;
     if ($total != 1) {
         throw new Exception("Error", 1);
     }
     $link = $data->fetch_assoc()['link'];
-    $query2 = "UPDATE links SET clicks = clicks + 1 WHERE code = '$path'";
+    $query2 = "UPDATE links SET $update_col = $update_col + 1 WHERE code = '$code'";
     $data2 = $conn->query($query2);
     header('Location: ' . $link);
 } catch (Throwable $th) {

@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShortUrl</title>
+    <title>Geolife</title>
     <meta name="description" content="URL Shortner Website">
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="/static/js/jquery_3.7.0.min.js"></script>
+    <script src="/static/js/easy.qrcode.min.js"></script>
     <script src="/static/js/index.js"></script>
 </head>
 
