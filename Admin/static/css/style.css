@@ -20,7 +20,7 @@
     -webkit-user-drag: none;
 }
 
-*::-webkit-scrollbar{
+*::-webkit-scrollbar {
     width: 8px;
 }
 
@@ -107,6 +107,10 @@ a[data-link]:hover {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.text-highlight {
+    background: yellow !important;
 }
 
 @keyframes loading-btn {
@@ -243,7 +247,7 @@ a[data-link]:hover {
 }
 
 .navbar .search_box {
-    background: #eee;
+    background: #f0f0f0;
     height: 45px;
     display: flex;
     align-items: center;
@@ -257,7 +261,7 @@ a[data-link]:hover {
     width: 45px;
     height: 45px;
     padding: 11px;
-    color: #444;
+    color: #111;
 }
 
 .navbar .search_box input {
@@ -744,11 +748,13 @@ a[data-link]:hover {
 
 .main .links_container .link_list {
     width: 30%;
+    min-height: calc(200px + 2rem);
     height: calc(100% - 80px) !important;
     border-right: var(--section-divider-width) solid var(--section-divider-color);
     overflow: auto;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .main .links_container .link_list .title {
@@ -761,29 +767,34 @@ a[data-link]:hover {
     cursor: pointer;
 }
 
-.main .links_container .link_list .link_list_placeholder {
+.main .links_container .link_list::before {
+    content: 'No Links Found';
     width: 100%;
+    position: absolute;
     text-align: center;
-    padding: 50px 0;
+    padding: 100px 0;
     color: #888;
 }
 
 .main .links_container .link_list .link {
     width: 100%;
+    background: white;
     display: flex;
     flex-wrap: wrap;
     padding: 10px 20px;
-    border-bottom: var(--section-divider-width) solid var(--section-divider-color);
+    border: var(--section-divider-width) solid transparent;
+    border-bottom-color: var(--section-divider-color);
     cursor: pointer;
     position: relative;
 }
 
 .main .links_container .link_list .link:hover {
-    background: #f0f0f3;
+    background: #f0f0f0;
 }
 
 .main .links_container .link_list .link.active {
     background: white;
+    border-color: #aaa;
 }
 
 .main .links_container .link_list .link .link_active {
@@ -1058,7 +1069,7 @@ a[data-link]:hover {
     transition: all 0.15s ease-in-out;
 }
 
-.main .links_container .link_info .link_data .qr_section .qr_actions button.activation {
+.main .links_container .link_info .link_data .qr_section .qr_actions button.generate {
     display: flex;
 }
 
@@ -1066,7 +1077,7 @@ a[data-link]:hover {
     display: flex;
 }
 
-.main .links_container .link_info .link_data .qr_section.active .qr_actions button.activation {
+.main .links_container .link_info .link_data .qr_section.active .qr_actions button.generate {
     display: none;
 }
 
@@ -1311,9 +1322,11 @@ a[data-link]:hover {
     flex-direction: column;
     padding: 20px 0 0 0;
 }
+
 .main .profile_container .profile_view .input {
     width: 100%;
 }
+
 .main .profile_container .profile_view .input form {
     width: 100%;
     padding: 10px 20px;
@@ -1321,9 +1334,11 @@ a[data-link]:hover {
     flex-wrap: wrap;
     justify-content: space-between;
 }
+
 .main .profile_container .profile_view .input label {
     width: 100%;
 }
+
 .main .profile_container .profile_view .input input {
     width: calc(100% - 95px);
     height: 45px;
@@ -1332,6 +1347,7 @@ a[data-link]:hover {
     border-radius: 4px;
     color: #333;
 }
+
 .main .profile_container .profile_view .input button {
     width: 85px;
     height: 45px;
@@ -1342,15 +1358,19 @@ a[data-link]:hover {
     justify-content: center;
     cursor: pointer;
 }
+
 .main .profile_container .profile_view .input.display_name button {
     background: #07f;
 }
+
 .main .profile_container .profile_view .input.email button {
     background: #0a0;
 }
+
 .main .profile_container .profile_view .input.username button {
     background: rgb(0, 170, 162);
 }
+
 .main .profile_container .profile_view .input.password button {
     background: #f04;
 }
@@ -1406,6 +1426,7 @@ a[data-link]:hover {
         cursor: pointer;
         border-radius: 4px;
     }
+
     .navbar .sidebar_toggle:hover {
         background: #eee;
     }
@@ -1445,10 +1466,10 @@ a[data-link]:hover {
         width: 60%;
     }
 
-    .main .profile_container{
+    .main .profile_container {
         align-items: center;
     }
-    
+
     .main .profile_container .profile_view {
         border-left: var(--section-divider-width) solid var(--section-divider-color);
     }
@@ -1458,11 +1479,12 @@ a[data-link]:hover {
     .navbar .search_box {
         background: transparent;
     }
-    
+
     .navbar .search_box:hover {
         background: #eee;
         cursor: pointer;
     }
+
     .navbar .search_box.active {
         background: #eee;
         border: 1px solid #ccc;
@@ -1475,6 +1497,7 @@ a[data-link]:hover {
     .navbar .search_box input {
         display: none;
     }
+
     .navbar .search_box.active input {
         position: absolute;
         display: block;

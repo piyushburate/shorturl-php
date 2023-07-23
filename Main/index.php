@@ -126,7 +126,7 @@ if (sizeof($path) == 2) {
         echo "<script>showError();</script>";
         exit();
     }
-    $qr_search = "&& qr_code = 1";
+    $qr_search = "&& qr_code = 2";
     $update_col = "qr_scans";
 }
 $servername = "localhost";

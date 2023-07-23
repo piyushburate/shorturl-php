@@ -28,8 +28,6 @@
                         </div>
                     ';
                 }
-            } else {
-                echo '<div class="link_list_placeholder">No Links Found</div>';
             }
             ?>
         </div>
@@ -100,13 +98,13 @@
                 <div class="title">QR Code</div>
                 <div class="qr_code"></div>
                 <div class="qr_actions">
-                    <button class="share">
+                    <button class="activate">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                                d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
                         </svg>
-                        <span>Share</span>
+                        <span>Deactivate</span>
                     </button>
                     <button class="download">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -116,7 +114,7 @@
                         </svg>
                         <span>Download</span>
                     </button>
-                    <button class="activation">
+                    <button class="generate">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -177,11 +175,11 @@
         $(".link_info .short_url span").text("geolife.click/" + code)
         $(".link_info .long_url a").html(long_url)
         $(".link_info .long_url a").attr("href", long_url)
-        $(".link_info .qr_section .activation").on("click", () => {
-            $(".link_info .qr_section .activation").addClass("loading-btn")
-            location.href = "/php/createQRCode.php?code=" + code
+        $(".link_info .qr_section .generate").on("click", () => {
+            $(".link_info .qr_section .generate").addClass("loading-btn")
+            location.href = "/php/setQRCode.php?set=2&code=" + code
         })
-        if (qr_code == 1) {
+        if (qr_code > 0) {
             $(".link_info .qr_section").addClass("active")
             $(".link_info .qr_section .qr_code").html("")
             var qr_code_options = {
@@ -195,6 +193,20 @@
                 logoBackgroundTransparent: true
             }
             new QRCode(document.querySelector(".link_info .qr_section .qr_code"), qr_code_options);
+            var qr_activate_set = 0
+            if (qr_code == 1) {
+                qr_activate_set = 2
+                $(".link_info .qr_section .qr_code canvas").css("filter", "blur(2px)")
+                $(".link_info .qr_section .qr_code canvas").css("-webkit-filter", "blur(2px)")
+                $(".link_info .qr_section .activate span").text("Activate")
+            } else {
+                qr_activate_set = 1
+                $(".link_info .qr_section .activate span").text("Deactivate")
+            }
+            $(".link_info .qr_section .activate").on("click", () => {
+                $(".link_info .qr_section .activate").addClass("loading-btn")
+                location.href = "/php/setQRCode.php?set=" + qr_activate_set + "&code=" + code
+            })
         } else {
             $(".link_info .qr_section").removeClass("active")
             $(".link_info .qr_section .qr_code").html("")
@@ -221,6 +233,7 @@
 </script>
 
 <script>
+    // Link Edit Button
     $("#edit_link_btn").on("click", async () => {
         openLinkDialog()
         $("#create_new_form").attr("action", "/php/updateLink.php")
@@ -244,4 +257,45 @@
         $(".dialog_box .dialog_body #form_linkactive").attr("checked", link_active == 1)
     })
 
+</script>
+
+<script>
+    // Link Search
+    var search_input = $(".dashboard .navbar .search_box input[type=search]")
+
+    var searchLinks = () => {
+        var search_value = search_input.val()
+        var links = $(".link_list .link")
+        for (let i = 0; i < links.length; i++) {
+            var openingTag = '<span class="text-highlight">'
+            var closingTag = '</span>'
+            var short_url = $(links.get(i)).children(".short_url")
+            var long_url = $(links.get(i)).children(".long_url")
+            short_url.html(short_url.text())
+            long_url.html(long_url.text())
+            var short_url_index = short_url.text().toUpperCase().indexOf(search_value.toUpperCase())
+            var long_url_index = long_url.text().toUpperCase().indexOf(search_value.toUpperCase())
+            $(links.get(i)).hide()
+            if (short_url_index > -1) {
+                $(links.get(i)).show()
+                var newHTML = short_url.text().split('')
+                newHTML.splice(short_url_index + search_value.length, 0, closingTag)
+                newHTML.splice(short_url_index, 0, openingTag)
+                var newHTML = newHTML.join('')
+                short_url.html(newHTML)
+            }
+            if (long_url_index > -1) {
+                $(links.get(i)).show()
+                var newHTML = long_url.text().split('')
+                newHTML.splice(long_url_index + search_value.length, 0, closingTag)
+                newHTML.splice(long_url_index, 0, openingTag)
+                var newHTML = newHTML.join('')
+                long_url.html(newHTML)
+            }
+        }
+    }
+
+    if (document.activeElement == document.querySelector('.dashboard .navbar .search_box input[type=search]')) {
+        searchLinks()
+    }
 </script>

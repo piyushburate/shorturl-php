@@ -8,6 +8,7 @@ if (!isset($_SESSION['username'])) {
 error_reporting(0);
 
 $code = $_REQUEST['code'];
+$set = $_REQUEST['set'];
 $uid = $_SESSION['uid'];
 
 include 'connection.php';
@@ -17,7 +18,7 @@ $data = $conn->query($query);
 if ($data) {
     $total = mysqli_num_rows($data);
     if ($total == 1) {
-        $query2 = "UPDATE links SET qr_code = 1 WHERE code = '$code' && uid = $uid";
+        $query2 = "UPDATE links SET qr_code = $set WHERE code = '$code' && uid = $uid";
         $data2 = $conn->query($query2);
         if ($data2) {
             echo "<script> alert('QR code generated successfully!');</script>";

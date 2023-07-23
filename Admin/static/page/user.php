@@ -193,5 +193,13 @@ if (!isset($_SESSION['username'])) {
         $('#cancel_bg').trigger('click')
     })
 
-    document
+    $(".dashboard .navbar .search_box input[type=search]").on("keyup", (e)=>{
+        if (path[2] !='links') {
+            if(e.key.toLowerCase() == 'enter'){
+                goTo('/user/links', 'user')
+            }
+        } else {
+            searchLinks()
+        }
+    })
 </script>

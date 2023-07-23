@@ -95,8 +95,6 @@ if (empty($qr_enabled)) {
                                 </div>
                             ';
                         }
-                    } else {
-                        echo '<div class="link_list_placeholder">No Links Found</div>';
                     }
                     ?>
                 </div>
