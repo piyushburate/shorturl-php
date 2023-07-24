@@ -2,7 +2,7 @@
 session_start();
 include("../../php/connection.php");
 $uid = $_SESSION['uid'];
-$query = "SELECT COUNT(id) AS 'total', SUM(link_active) AS 'active_links', SUM(qr_code) AS 'qr_enabled' FROM links WHERE uid = $uid";
+$query = "SELECT COUNT(id) AS 'total', SUM(link_active) AS 'active_links' FROM links WHERE uid = $uid";
 $data = $conn->query($query);
 $row = $data->fetch_assoc();
 $total = $row['total'];
@@ -11,7 +11,11 @@ if (empty($active)) {
     $active = 0;
 }
 $deactived = $total - $active;
-$qr_enabled = $row['qr_enabled'];
+
+$query = "SELECT COUNT(qr_code) as qr_enabled FROM links WHERE uid = $uid && qr_code = 2";
+$data = $conn->query($query);
+$row = $data->fetch_assoc();
+$qr_enabled = floor($row['qr_enabled']);
 if (empty($qr_enabled)) {
     $qr_enabled = 0;
 }
@@ -73,7 +77,7 @@ if (empty($qr_enabled)) {
             <div class="link_list">
                 <div class="link_list_container">
                     <?php
-                    $query2 = "SELECT code, link, DATE_FORMAT(datetime, '%b %e, %Y') AS 'date', clicks, link_active FROM links WHERE uid = $uid ORDER BY datetime DESC LIMIT 5";
+                    $query2 = "SELECT code, link, DATE_FORMAT(datetime, '%b %e, %Y') AS 'date', clicks, link_active FROM links WHERE uid = $uid ORDER BY datetime DESC LIMIT 7";
                     $data2 = $conn->query($query2);
 
                     if ($data2->num_rows > 0) {
@@ -104,32 +108,104 @@ if (empty($qr_enabled)) {
     </div>
     <div class="links_performance_overview">
         <div class="title">Links Performance Overview</div>
-        <div class="most_clicks_links">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Short Link</th>
-                        <th>Clicks</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+        <div class="table_container">
+
+            <div class="most_engaged_links">
+                <table class="table">
+                    <caption>Most Engaged Links</caption>
+                    <tr class="head">
+                        <td></td>
+                        <td class="short_url">Short Link</td>
+                        <td class="clicks">Clicks</td>
+                        <td class="scans">Scans</td>
+                        <td class="engagements">Engagements</td>
                     </tr>
-                <tbody>
-                    <tr>
-                        <td>pract28</td>
-                        <td>20</td>
-                        <td>Active</td>
-                        <td><button class="view">View</button></td>
+                    <?php
+                    $query = "SELECT code, clicks, qr_scans FROM links WHERE uid = $uid ORDER BY (clicks+qr_scans) DESC LIMIT 5";
+                    $result = $conn->query($query);
+
+                    if ($result->num_rows > 0) {
+                        $i = 1;
+                        while ($row = $result->fetch_assoc()) {
+                            $code = $row['code'];
+                            $clicks = $row['clicks'];
+                            $scans = $row['qr_scans'];
+                            $total = $row['clicks'] + $row['qr_scans'];
+                            echo <<<END
+                            <tr onclick="goTo('/user/links?code=$code', 'user')">
+                                <td>$i</td>
+                                <td>geolife.click/$code</td>
+                                <td>$clicks</td>
+                                <td>$scans</td>
+                                <td>$total</td>
+                            END;
+                            $i++;
+                        }
+                    }
+                    ?>
+                </table>
+            </div>
+            <div class="most_clicks_links">
+                <table class="table">
+                    <caption>Most Clicked Links</caption>
+                    <tr class="head">
+                        <td></td>
+                        <td class="short_url">Short Link</td>
+                        <td class="clicks">Clicks</td>
                     </tr>
-                    <tr>
-                        <td>pract28</td>
-                        <td>20</td>
-                        <td>Active</td>
-                        <td><button class="view">View</button></td>
+                    <?php
+                    $query = "SELECT code, clicks FROM links WHERE uid = $uid ORDER BY clicks DESC LIMIT 5";
+                    $result = $conn->query($query);
+
+                    if ($result->num_rows > 0) {
+                        $i = 1;
+                        while ($row = $result->fetch_assoc()) {
+                            $code = $row['code'];
+                            $clicks = $row['clicks'];
+                            echo <<<END
+                            <tr onclick="goTo('/user/links?code=$code', 'user')">
+                                <td>$i</td>
+                                <td>geolife.click/$code</td>
+                                <td>$clicks</td>
+                            END;
+                            $i++;
+                        }
+                    }
+                    ?>
+                </table>
+            </div>
+            <div class="most_scanned_links">
+                <table class="table">
+                    <caption>Most Scanned Links</caption>
+                    <tr class="head">
+                        <td></td>
+                        <td class="short_url">Short Link</td>
+                        <td class="clicks">Scans</td>
                     </tr>
-                </tbody>
-            </table>
+                    <?php
+                    $query = "SELECT code, qr_scans FROM links WHERE uid = $uid ORDER BY qr_scans DESC LIMIT 5";
+                    $result = $conn->query($query);
+
+                    if ($result->num_rows > 0) {
+                        $i = 1;
+                        while ($row = $result->fetch_assoc()) {
+                            $code = $row['code'];
+                            $scans = $row['qr_scans'];
+                            echo <<<END
+                            <tr onclick="goTo('/user/links?code=$code', 'user')">
+                                <td>$i</td>
+                                <td>geolife.click/$code</td>
+                                <td>$scans</td>
+                            END;
+                            $i++;
+                        }
+                    }
+                    ?>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 <script>
+
 </script>

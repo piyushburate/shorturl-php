@@ -6,6 +6,7 @@ CREATE TABLE `links` (
   `title` varchar(50) NOT NULL,
   `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `qr_code` int(11) NOT NULL DEFAULT '0',
+  `qr_scans` bigint(20) NOT NULL DEFAULT '0',
   `clicks` bigint(20) NOT NULL DEFAULT '0',
   `link_active` tinyint(1) NOT NULL DEFAULT '1'
 );

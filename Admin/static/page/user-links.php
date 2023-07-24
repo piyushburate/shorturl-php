@@ -222,7 +222,7 @@
         })
         var code = window.location.search.replace("?code=", "")
         if (code != '' && $("[data-code=" + code + "]")) {
-            $("[data-code=" + code + "]").trigger("click")
+            $(".link[data-code=" + code + "]").trigger("click")
         } else {
             if (window.matchMedia("(min-width: 551px)").matches && $(".link").first().length != 0) {
                 $(".link").first()[0].click()

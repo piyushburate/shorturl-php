@@ -4,6 +4,7 @@
     --sidebar-width: 250px;
     --section-divider-color: #ddd;
     --section-divider-width: 1px;
+    --navbar-height: 60px;
 }
 
 * {
@@ -107,6 +108,18 @@ a[data-link]:hover {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+.text-selectable {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    -khtml-user-select: text;
+    cursor: text;
+}
+.element-dragable {
+    -webkit-user-drag: element;
+    cursor: grab;
 }
 
 .text-highlight {
@@ -218,12 +231,12 @@ a[data-link]:hover {
         'navb navb navb'
         'side main main'
         'side main main';
-    grid-template-rows: 60px 1fr 1fr;
+    grid-template-rows: var(--navbar-height) 1fr 1fr;
     grid-template-columns: var(--sidebar-width) 1fr 1fr;
 }
 
 .dashboard .navbar {
-    height: 60px;
+    height: var(--navbar-height);
     background: white;
     grid-area: navb;
     display: flex;
@@ -536,10 +549,21 @@ a[data-link]:hover {
 }
 
 .dashboard .main {
-    height: calc(100vh - 60px);
+    height: calc(100vh - var(--navbar-height));
     overflow: hidden;
     background: white;
     grid-area: main;
+}
+
+.main>div>.title {
+    width: 100%;
+    height: 80px !important;
+    background: white;
+    border-bottom: var(--section-divider-width) solid var(--section-divider-color);
+    padding: 10px 30px;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
 }
 
 .main .overview_container {
@@ -557,13 +581,15 @@ a[data-link]:hover {
     padding: 25px;
 }
 
-.main .overview_container>div .title {
+.main .overview_container>div>.title {
     width: 100%;
+    height: 50px;
     font-size: 1.2rem;
-    color: #555;
-    padding: 10px 20px;
-    position: relative;
-    border-bottom: 2px solid #f9f9f9;
+    background: #777;
+    color: white;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
 }
 
 .main .overview_container .links_overview {
@@ -653,10 +679,6 @@ a[data-link]:hover {
     border-top: 1.5px solid #eee;
 }
 
-.main .overview_container .last_created_links .title {
-    border-bottom: 1.5px solid #eee;
-}
-
 .main .overview_container .last_created_links .view_all_links:hover {
     cursor: pointer;
     background: #f9f9f9;
@@ -692,42 +714,84 @@ a[data-link]:hover {
 .main .overview_container .links_performance_overview {
     grid-area: perf;
     border-radius: 6px;
-    overflow: auto;
+    overflow: hidden;
     background: white;
     box-shadow: 0 4px 10px #ddd;
+}
+
+.main .overview_container .links_performance_overview .table_container {
+    height: calc(100% - 50px);
+    overflow: auto;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
-.main .overview_container .links_performance_overview .most_clicks_links {
+.main .overview_container .links_performance_overview .table_container>div {
     width: 100%;
-    padding: 30px 40px;
+    height: auto;
+    padding: 10px 15px 30px 15px;
+    overflow-x: auto;
 }
 
-.main .overview_container .links_performance_overview .most_clicks_links table.table {
+.main .overview_container .links_performance_overview .table {
     width: 100%;
-    background: #f5f5f5;
-    border-radius: 4px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden !important;
     border-collapse: collapse;
+    box-shadow: 0 1px 7px #ccc;
 }
 
-.main .overview_container .links_performance_overview .most_clicks_links table.table thead tr {
-    height: 50px;
-    color: #666;
-    border-bottom: 2px solid #ddd;
-    margin: 0px 20px;
+.main .overview_container .links_performance_overview .table caption {
+    padding: 10px 20px;
+    background: #678;
+    color: white;
+    font-size: 1.2rem;
 }
 
-.main .overview_container .links_performance_overview .most_clicks_links table.table tbody tr {
+.main .overview_container .links_performance_overview .table tr:not(.head):hover {
+    background: #f1f1f1;
+}
+
+.main .overview_container .links_performance_overview .table tr {
     height: 50px;
-    text-align: center;
+    padding: 0 200px;
     color: #333;
+    border-bottom: 1px solid #ddd;
+    transition: background 0.2s ease-in-out;
+    cursor: pointer;
 }
+
+.main .overview_container .links_performance_overview .table tr.head {
+    height: 50px;
+    background: #ccc;
+    font-weight: bold;
+}
+
+.main .overview_container .links_performance_overview .table tr td:last-child {
+    padding-right: 20px;
+}
+
+.main .overview_container .links_performance_overview .table tr th,
+.main .overview_container .links_performance_overview .table tr td {
+    padding: 0 10px;
+    text-align: center;
+}
+
+.main .overview_container .links_performance_overview .table tr td:nth-child(1) {
+    padding-left: 20px;
+}
+
+.main .overview_container .links_performance_overview .table tr td:nth-child(2) {
+    text-align: start;
+    padding: 0 20px;
+}
+
 
 .main .links_container {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 45px);
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
@@ -735,26 +799,23 @@ a[data-link]:hover {
     background: #f4f6fa;
 }
 
-.main .links_container>.title {
-    width: 100%;
-    height: 80px !important;
-    background: white;
-    border-bottom: var(--section-divider-width) solid var(--section-divider-color);
-    padding: 10px 30px;
-    font-size: 2rem;
-    display: flex;
-    align-items: center;
-}
-
 .main .links_container .link_list {
     width: 30%;
-    min-height: calc(200px + 2rem);
-    height: calc(100% - 80px) !important;
+    height: 100%;
     border-right: var(--section-divider-width) solid var(--section-divider-color);
-    overflow: auto;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     position: relative;
+}
+
+.main .links_container .link_list::before {
+    content: 'No Links Found';
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    padding: 100px 0;
+    color: #888;
 }
 
 .main .links_container .link_list .title {
@@ -767,13 +828,11 @@ a[data-link]:hover {
     cursor: pointer;
 }
 
-.main .links_container .link_list::before {
-    content: 'No Links Found';
+.main .links_container .link_list .link_list_container {
     width: 100%;
-    position: absolute;
-    text-align: center;
-    padding: 100px 0;
-    color: #888;
+    min-height: calc(200px + 2rem);
+    height: calc(100% - 80px) !important;
+    overflow: auto;
 }
 
 .main .links_container .link_list .link {
@@ -782,7 +841,8 @@ a[data-link]:hover {
     display: flex;
     flex-wrap: wrap;
     padding: 10px 20px;
-    border: var(--section-divider-width) solid transparent;
+    padding-right: 10px;
+    border-bottom: var(--section-divider-width) solid transparent;
     border-bottom-color: var(--section-divider-color);
     cursor: pointer;
     position: relative;
@@ -793,8 +853,7 @@ a[data-link]:hover {
 }
 
 .main .links_container .link_list .link.active {
-    background: white;
-    border-color: #aaa;
+    background: #f0f0f0;
 }
 
 .main .links_container .link_list .link .link_active {
@@ -853,7 +912,7 @@ a[data-link]:hover {
 
 .main .links_container .link_list .link .clicks span {
     height: 17px;
-    margin: 0 8px;
+    margin-left: 5px;
 }
 
 .main .links_container .link_list .link .clicks svg {
@@ -863,7 +922,7 @@ a[data-link]:hover {
 
 .main .links_container .link_info {
     width: 70%;
-    height: calc(100% - 80px) !important;
+    height: 100%;
     overflow: auto;
     display: none;
     flex-direction: column;
@@ -1300,18 +1359,6 @@ a[data-link]:hover {
     flex-direction: column;
 }
 
-.main .profile_container .title {
-    width: 100%;
-    height: 80px !important;
-    background: white;
-    border-bottom: var(--section-divider-width) solid var(--section-divider-color);
-    padding: 10px 30px;
-    font-size: 2rem;
-    display: flex;
-    align-items: center;
-    color: #333;
-}
-
 .main .profile_container .profile_view {
     max-width: 500px;
     width: 100%;
@@ -1392,10 +1439,16 @@ a[data-link]:hover {
 
 @media screen and (max-width:900px) {
     .main .overview_container {
-        grid-template-columns: 50% 1fr;
         column-gap: 20px;
         row-gap: 20px;
         padding: 20px;
+        grid-template-areas:
+            'view'
+            'last'
+            'perf';
+        grid-template-columns: 1fr;
+        grid-template-rows: min-content min-content min-content;
+        overflow: auto;
     }
 
     .main .links_container .link_list {
@@ -1451,13 +1504,6 @@ a[data-link]:hover {
         left: 0;
     }
 
-    .main .overview_container {
-        grid-template-columns: 50% 1fr;
-        column-gap: 10px;
-        row-gap: 10px;
-        padding: 10px;
-    }
-
     .main .links_container .link_list {
         width: 40%;
     }
@@ -1494,36 +1540,37 @@ a[data-link]:hover {
         padding: 8px;
     }
 
-    .navbar .search_box input {
+    .navbar .search_box .input {
         display: none;
-    }
-
-    .navbar .search_box.active input {
         position: absolute;
-        display: block;
-        width: 90%;
+        width: 100%;
         flex: 1 1 auto;
-        height: 50px;
-        margin: 0 20px;
-        top: 75px;
+        height: 70px;
+        top: var(--navbar-height);
         left: 0;
-        right: 0;
         background: white;
         z-index: 2;
-        padding: 5px 15px;
+        padding: 8px 15px;
+        border-bottom: 1px solid #ccc;
+        box-shadow: 0 2px 8px #ddd;
+    }
+
+    .navbar .search_box.active .input {
+        display: block;
+    }
+
+    .navbar .search_box .input input {
+        background: #f0f0f0;
+        width: 100%;
         border-radius: 4px;
-        border: 1px solid #ccc;
-        box-shadow: 0 2px 10px #eee;
+        padding: 0 10px;
     }
 
     .main .overview_container {
-        grid-template-areas:
-            'view'
-            'last'
-            'perf';
         grid-template-columns: 1fr;
-        grid-template-rows: min-content min-content min-content;
-        overflow: auto;
+        column-gap: 10px;
+        row-gap: 10px;
+        padding: 10px;
     }
 
     .main .links_container .link_list {
