@@ -77,7 +77,11 @@ if (empty($qr_enabled)) {
             <div class="link_list">
                 <div class="link_list_container">
                     <?php
-                    $query2 = "SELECT code, link, DATE_FORMAT(datetime, '%b %e, %Y') AS 'date', clicks, link_active FROM links WHERE uid = $uid ORDER BY datetime DESC LIMIT 7";
+                    $limit = 5;
+                    if($_COOKIE['last_created_link_count']){
+                        $limit = $_COOKIE['last_created_link_count'];
+                    }
+                    $query2 = "SELECT code, link, DATE_FORMAT(datetime, '%b %e, %Y') AS 'date', clicks, link_active FROM links WHERE uid = $uid ORDER BY datetime DESC LIMIT $limit";
                     $data2 = $conn->query($query2);
 
                     if ($data2->num_rows > 0) {
@@ -145,7 +149,7 @@ if (empty($qr_enabled)) {
                     ?>
                 </table>
             </div>
-            <div class="most_clicks_links">
+            <div class="most_clicked_links" <?php if($_COOKIE['show_most_clicked_links'] == 'false'){echo 'hidden';} ?>>
                 <table class="table">
                     <caption>Most Clicked Links</caption>
                     <tr class="head">
@@ -174,7 +178,7 @@ if (empty($qr_enabled)) {
                     ?>
                 </table>
             </div>
-            <div class="most_scanned_links">
+            <div class="most_scanned_links" <?php if($_COOKIE['show_most_scanned_links'] == 'false'){echo 'hidden';} ?>>
                 <table class="table">
                     <caption>Most Scanned Links</caption>
                     <tr class="head">

@@ -50,6 +50,18 @@ button {
     font-size: 1rem;
 }
 
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
 a {
     color: unset;
     text-decoration: none;
@@ -109,6 +121,7 @@ a[data-link]:hover {
     white-space: nowrap;
     overflow: hidden;
 }
+
 .text-selectable {
     user-select: text;
     -webkit-user-select: text;
@@ -117,6 +130,7 @@ a[data-link]:hover {
     -khtml-user-select: text;
     cursor: text;
 }
+
 .element-dragable {
     -webkit-user-drag: element;
     cursor: grab;
@@ -134,6 +148,42 @@ a[data-link]:hover {
     100% {
         transform: rotate(360deg);
     }
+}
+
+input[type=checkbox].toggle-btn {
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 50px;
+    height: 30px;
+    background-color: #fff;
+    border: 1px solid lightcoral;
+    border-radius: 50px;
+    box-shadow: inset -20px 0 0 0 lightcoral;
+    transition: all 0.05s linear;
+}
+
+input[type=checkbox].toggle-btn::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    background: transparent;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
+    transition: all 0.1s linear;
+}
+
+input[type=checkbox].toggle-btn:checked {
+    box-shadow: inset 20px 0 0 0 #4ed164;
+    border-color: #4ed164;
+}
+
+input[type=checkbox].toggle-btn:checked::after {
+    left: 20px;
+    box-shadow: -2px 4px 3px rgba(0, 0, 0, 0.05);
 }
 
 #app {
@@ -1294,42 +1344,6 @@ a[data-link]:hover {
     margin-right: 15px;
 }
 
-.dialog_box .dialog_body .linkactive input {
-    position: relative;
-    appearance: none;
-    -webkit-appearance: none;
-    width: 50px;
-    height: 30px;
-    background-color: #fff;
-    border: 1px solid #D9DADC;
-    border-radius: 50px;
-    box-shadow: inset -20px 0 0 0 #fff;
-    transition: all 0.05s linear;
-}
-
-.dialog_box .dialog_body .linkactive input::after {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    background: transparent;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
-    transition: all 0.1s linear;
-}
-
-.dialog_box .dialog_body .linkactive input:checked {
-    box-shadow: inset 20px 0 0 0 #4ed164;
-    border-color: #4ed164;
-}
-
-.dialog_box .dialog_body .linkactive input:checked::after {
-    left: 20px;
-    box-shadow: -2px 4px 3px rgba(0, 0, 0, 0.05);
-}
-
 .dialog_box .dialog_footer {
     width: 100%;
     min-height: 70px;
@@ -1420,6 +1434,65 @@ a[data-link]:hover {
 
 .main .profile_container .profile_view .input.password button {
     background: #f04;
+}
+
+.main .settings_container {
+    width: 100%;
+    height: 100%;
+    background: #f4f6fa;
+    display: flex;
+    flex-direction: column;
+}
+
+.main .settings_container .settings_view {
+    max-width: 500px;
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-right: var(--section-divider-width) solid var(--section-divider-color);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0 0 0;
+}
+
+.main .settings_container .settings_view .item {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    color: #333;
+    margin: 10px 0;
+    padding: 0 25px 0 10px;
+}
+
+.main .settings_container .settings_view .item svg {
+    width: 50px;
+    height: 50px;
+    margin: 0 10px;
+    padding: 12px;
+}
+
+.main .settings_container .settings_view .item .title {
+    margin-right: auto;
+}
+
+.main .settings_container .settings_view .item .input {
+    width: auto;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.main .settings_container .settings_view .item .input input[type=number] {
+    width: 50px;
+    height: 40px;
+    background: #eee;
+    padding: 5px;
+    text-align: center;
+    border-radius: 8px;
+    color: #333;
+    margin: 0 10px;
 }
 
 /* Screen Breakpoints */
@@ -1517,6 +1590,14 @@ a[data-link]:hover {
     }
 
     .main .profile_container .profile_view {
+        border-left: var(--section-divider-width) solid var(--section-divider-color);
+    }
+
+    .main .settings_container {
+        align-items: center;
+    }
+
+    .main .settings_container .settings_view {
         border-left: var(--section-divider-width) solid var(--section-divider-color);
     }
 }
@@ -1617,6 +1698,10 @@ a[data-link]:hover {
     }
 
     .main .profile_container .profile_view {
+        max-width: 100%;
+    }
+
+    .main .settings_container .settings_view {
         max-width: 100%;
     }
 }

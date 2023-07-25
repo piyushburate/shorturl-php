@@ -1,3 +1,16 @@
+if(!checkCookie("auto_qr_generate")){
+    setCookie("auto_qr_generate", false, 365)
+}
+if(!checkCookie("last_created_link_count")){
+    setCookie("last_created_link_count", 5, 365)
+}
+if(!checkCookie("show_most_clicked_links")){
+    setCookie("show_most_clicked_links", true, 365)
+}
+if(!checkCookie("show_most_scanned_links")){
+    setCookie("show_most_scanned_links", true, 365)
+}
+
 let path = null
 
 function goTo(link, page) {

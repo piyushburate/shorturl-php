@@ -139,7 +139,7 @@ if (!isset($_SESSION['username'])) {
                     </div>
                     <div class="linkactive">
                         <label for="form_linkactive">Link Active</label>
-                        <input type="checkbox" name="link_active" id="form_linkactive" checked=true>
+                        <input type="checkbox" class="toggle-btn" name="link_active" id="form_linkactive" checked=true>
                     </div>
                 </div>
                 <div class="dialog_footer">
