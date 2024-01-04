@@ -131,14 +131,14 @@ if (!isset($_SESSION['username'])) {
                         <input type="url" name="long_url" id="form_longurl" required>
                     </div>
                     <div class="input title">
-                        <label for="form_title">Title</label>
-                        <input type="text" name="title" id="form_title" required>
+                        <label for="form_title">Title<br><span style="color: red;">(Optional)</span></label>
+                        <input type="text" name="title" id="form_title">
                     </div>
                     <div class="input shorturl">
-                        <label for="form_shorturl">Short URL code</label>
+                        <label for="form_shorturl">Short URL code<br><span style="color: red;">(*Keep blank for random code)</span></label>
                         <span class="input_prefix"><?php echo $domain; ?></span>
                         <span class="divider">/</span>
-                        <input type="text" name="short_url" id="form_shorturl" size="1" required>
+                        <input type="text" name="short_url" id="form_shorturl" size="1">
                     </div>
                     <div class="linkactive">
                         <label for="form_linkactive">Link Active</label>

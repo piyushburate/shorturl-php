@@ -7,6 +7,7 @@
             session_start();
             include("../../php/connection.php");
             $domain = $details_json['domain'];
+            $protocol = $details_json['protocol'];
             $uid = $_SESSION['uid'];
             $query = "SELECT id, title, code, link, DATE_FORMAT(datetime, '%b %e, %Y') AS 'date', DATE_FORMAT(datetime, '%l:%i %p') AS 'time', clicks, qr_code, qr_scans, link_active FROM links WHERE uid = $uid ORDER BY datetime DESC";
             $result = $conn->query($query);
@@ -141,7 +142,7 @@
         a = null
     })
     $(".link_info .short_url .copy").on("click", () => {
-        copyText($(".link_info .short_url span").text())
+        copyText("<?php echo $protocol; ?>"+ $(".link_info .short_url span").text())
         $(".link_info .short_url .copy").text("Copied!")
         setTimeout(() => {
             $(".link_info .short_url .copy").text("Copy")
@@ -184,7 +185,7 @@
             $(".link_info .qr_section").addClass("active")
             $(".link_info .qr_section .qr_code").html("")
             var qr_code_options = {
-                text: "https://<?php echo $domain; ?>/" + code + "/qr",
+                text: "<?php echo $protocol . $domain; ?>/" + code + "/qr",
                 title: "<?php echo $domain; ?>/" + code,
                 titleFont: "normal normal bold 18px Arial",
                 titleHeight: 40,
