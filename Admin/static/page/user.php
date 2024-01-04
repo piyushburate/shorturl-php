@@ -1,4 +1,7 @@
 <?php
+include('../../php/connection.php');
+$title = $details_json['title'];
+$domain = $details_json['domain'];
 session_start();
 if (!isset($_SESSION['username'])) {
     echo "<script>goTo('/login');</script>";
@@ -14,7 +17,7 @@ if (!isset($_SESSION['username'])) {
             </svg>
         </div>
         <div class="brand">
-            <img src="/static/img/geolife-logo.png" alt="">
+            <span style="font-size: 30px;"><?php echo $title; ?></span>
         </div>
         <div class="search_box">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -133,7 +136,7 @@ if (!isset($_SESSION['username'])) {
                     </div>
                     <div class="input shorturl">
                         <label for="form_shorturl">Short URL code</label>
-                        <span class="input_prefix">geolife.click</span>
+                        <span class="input_prefix"><?php echo $domain; ?></span>
                         <span class="divider">/</span>
                         <input type="text" name="short_url" id="form_shorturl" size="1" required>
                     </div>

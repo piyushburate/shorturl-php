@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("../../php/connection.php");
+$domain = $details_json['domain'];
 $uid = $_SESSION['uid'];
 $query = "SELECT COUNT(id) AS 'total', SUM(link_active) AS 'active_links' FROM links WHERE uid = $uid";
 $data = $conn->query($query);
@@ -92,7 +93,7 @@ if (empty($qr_enabled)) {
                                 <span class="link_active active' . $row['link_active'] . '"></span>
                                 <span class="date_created">' . $row['date'] . '</span>
                                 <span class="long_url">' . $row['link'] . '</span>
-                                <span class="short_url">geolife.click/' . $row['code'] . '</span>
+                                <span class="short_url">'.$domain.'/' . $row['code'] . '</span>
                                 <div class="clicks">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                         stroke="currentColor" class="w-6 h-6">
@@ -138,7 +139,7 @@ if (empty($qr_enabled)) {
                             echo <<<END
                             <tr onclick="goTo('/user/links?code=$code', 'user')">
                                 <td>$i</td>
-                                <td>geolife.click/$code</td>
+                                <td>$domain/$code</td>
                                 <td>$clicks</td>
                                 <td>$scans</td>
                                 <td>$total</td>
@@ -169,7 +170,7 @@ if (empty($qr_enabled)) {
                             echo <<<END
                             <tr onclick="goTo('/user/links?code=$code', 'user')">
                                 <td>$i</td>
-                                <td>geolife.click/$code</td>
+                                <td>$domain/$code</td>
                                 <td>$clicks</td>
                             END;
                             $i++;
@@ -198,7 +199,7 @@ if (empty($qr_enabled)) {
                             echo <<<END
                             <tr onclick="goTo('/user/links?code=$code', 'user')">
                                 <td>$i</td>
-                                <td>geolife.click/$code</td>
+                                <td>$domain/$code</td>
                                 <td>$scans</td>
                             END;
                             $i++;

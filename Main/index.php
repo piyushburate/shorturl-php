@@ -1,9 +1,11 @@
 <?php
 error_reporting(0);
+$details_json = json_decode(file_get_contents('details.json'), true);
+
 $path = trim($_SERVER['REQUEST_URI'], "/");
 $path = explode('?', $path)[0];
 if ($path == "") {
-    header("Location: https://admin.geolife.click");
+    header("Location: ". $details_json['protocol'] . $details_json['admin-domain']);
     exit();
 }
 $path = explode('/', $path);
@@ -15,7 +17,7 @@ $path = explode('/', $path);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geolife</title>
+    <title><?php echo $details_json['title']; ?></title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
@@ -129,10 +131,10 @@ if (sizeof($path) == 2) {
     $qr_search = "&& qr_code = 2";
     $update_col = "qr_scans";
 }
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "shorturl";
+$servername = $details_json['servername'];
+$username = $details_json['username'];
+$password = $details_json['password'];
+$dbname = $details_json['dbname'];
 
 // Create connection
 try {

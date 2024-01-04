@@ -6,6 +6,7 @@
             <?php
             session_start();
             include("../../php/connection.php");
+            $domain = $details_json['domain'];
             $uid = $_SESSION['uid'];
             $query = "SELECT id, title, code, link, DATE_FORMAT(datetime, '%b %e, %Y') AS 'date', DATE_FORMAT(datetime, '%l:%i %p') AS 'time', clicks, qr_code, qr_scans, link_active FROM links WHERE uid = $uid ORDER BY datetime DESC";
             $result = $conn->query($query);
@@ -17,7 +18,7 @@
                         <span class="link_active active' . $row['link_active'] . '"></span>
                         <span class="date_created">' . $row['date'] . '</span>
                         <span class="long_url">' . $row['link'] . '</span>
-                        <span class="short_url">geolife.click/' . $row['code'] . '</span>
+                        <span class="short_url">'.$domain.'/' . $row['code'] . '</span>
                         <div class="clicks">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-6 h-6">
@@ -172,7 +173,7 @@
         $(".link_info .link_details .clicks span").html((parseInt(clicks) + parseInt(qr_scans)) + " Engagements")
         $(".link_info .link_data .clicks span").html(clicks + " clicks")
         $(".link_info .link_data .qr_scans span").html(qr_scans + " scans")
-        $(".link_info .short_url span").text("geolife.click/" + code)
+        $(".link_info .short_url span").text("<?php echo $domain; ?>/" + code)
         $(".link_info .long_url a").html(long_url)
         $(".link_info .long_url a").attr("href", long_url)
         $(".link_info .qr_section .generate").on("click", () => {
@@ -183,13 +184,13 @@
             $(".link_info .qr_section").addClass("active")
             $(".link_info .qr_section .qr_code").html("")
             var qr_code_options = {
-                text: "https://geolife.click/" + code + "/qr",
-                title: "geolife.click/" + code,
+                text: "https://<?php echo $domain; ?>/" + code + "/qr",
+                title: "<?php echo $domain; ?>/" + code,
                 titleFont: "normal normal bold 18px Arial",
                 titleHeight: 40,
                 titleTop: 15,
                 quietZone: 20,
-                logo: "/static/img/geolife-logo-circle-coloured.png",
+                // logo: "logo-image-path",
                 logoBackgroundTransparent: true
             }
             new QRCode(document.querySelector(".link_info .qr_section .qr_code"), qr_code_options);

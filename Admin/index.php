@@ -1,10 +1,11 @@
+<?php include('php/connection.php') ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geolife</title>
+    <title><?php echo $details_json['title']; ?></title>
     <meta name="description" content="URL Shortner Website">
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="/static/js/jquery_3.7.0.min.js"></script>

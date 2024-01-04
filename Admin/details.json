@@ -1,0 +1,10 @@
+{
+    "title": "Shorturl",
+    "protocol": "http://",
+    "domain": "shorturl.com",
+    "admin-domain": "shorturl-admin.com",
+    "servername": "localhost",
+    "username": "root",
+    "password": "",
+    "dbname": "shorturl"
+}
